@@ -1,5 +1,10 @@
 #include <iostream>
 #include "BalanceCalculator.h"
+#include "BalanceCalculatorParallel.h"
+
+#include <ctime>
+
+using namespace std;
 
 int main() {
   int n = 3;
@@ -23,10 +28,15 @@ int main() {
   t[1] = 1.4;
   t[2] = 1.9;
 
-  BalanceCalculator balanceCalculator(a, t, n);
+//  char filename[] = "../task.txt.example";
+  char filename[] = "/home/dmitriy/big_task.txt";
+  BalanceCalculatorParallel balanceCalculator(filename);
 
+  clock_t begin = clock();
   balanceCalculator.calculate();
-
+  clock_t end = clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << elapsed_secs << endl;
   double* T = balanceCalculator.getT();
 
   for(int i = 0; i < 3; i++) {

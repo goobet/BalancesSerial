@@ -3,24 +3,25 @@
 #include "matrix_inverse.h"
 
 class BalanceCalculator {
-private:
-    double** _a;
-    double** _b;
-    double** _ema;
-    double* _t;
-    int _n;
-    MatrixInverse _matrix_inverse = 0;
 public:
     double *getT() const;
 
 private:
     double *_T;
     void calculateB();
+  void initLocals();
 public:
     BalanceCalculator(double **a, double *t, int n);
+    BalanceCalculator(char* filename);
     void calculate();
 protected:
-    void mult(double* v, double** m, double* r);
+    int _n;
+    double** _a;
+    double** _b;
+    double** _ema;
+    double* _t;
+    MatrixInverse _matrix_inverse = 0;
+    virtual void multiply(double *v, double **m, double *r);
 };
 
 

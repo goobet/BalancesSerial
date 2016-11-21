@@ -1,28 +1,15 @@
-//
-// Created by dmitriy on 11/21/16.
-//
-
+#include <cstdio>
 #include "BalanceCalculator.h"
 
 BalanceCalculator::BalanceCalculator(double **a, double *t, int n) {
   _a = a;
   _t = t;
   _n = n;
-  _matrix_inverse = MatrixInverse(_n);
-
-  _b = new double*[_n];
-  _ema = new double*[_n];
-  for(int i = 0; i < _n; i++) {
-    _ema[i] = new double[_n];
-  }
-  for(int i = 0; i < _n; i++) {
-    _b[i] = new double[_n];
-  }
-
-  _T = new double[_n];
+  initLocals();
 }
 
-void BalanceCalculator::mult(double* v, double** m, double* r) {
+
+void BalanceCalculator::multiply(double *v, double **m, double *r) {
   for(int i = 0; i < _n; i++) {
     r[i]= 0;
     for(int j = 0; j < _n; j++) {
@@ -32,8 +19,8 @@ void BalanceCalculator::mult(double* v, double** m, double* r) {
 }
 
 void BalanceCalculator::calculate() {
-  calculateB();
-  mult(_t, _b, _T);
+//  calculateB();
+  multiply(_t, _a, _T);
 }
 
 double *BalanceCalculator::getT() const {
@@ -49,4 +36,39 @@ void BalanceCalculator::calculateB() {
   }
 
   _matrix_inverse.calculate(_ema, _b);
+}
+
+BalanceCalculator::BalanceCalculator(char *filename) {
+  FILE* file = fopen(filename, "r");
+  fscanf(file, "%d", &_n);
+
+  _a = new double*[_n];
+  for(int i = 0; i < _n; i++) {
+    _a[i] = new double[_n];
+    for(int j = 0; j < _n; j++) {
+      fscanf(file, "%lf", &_a[i][j]);
+    }
+  }
+
+  _t = new double[_n];
+  for(int i = 0; i < _n; i++) {
+    fscanf(file, "%lf", &_t[i]);
+  }
+  fclose(file);
+  initLocals();
+}
+
+void BalanceCalculator::initLocals() {
+  _matrix_inverse = MatrixInverse(_n);
+
+  _b = new double *[_n];
+  _ema = new double *[_n];
+  for (int i = 0; i < _n; i++) {
+    _ema[i] = new double[_n];
+  }
+  for (int i = 0; i < _n; i++) {
+    _b[i] = new double[_n];
+  }
+
+  _T = new double[_n];
 }
